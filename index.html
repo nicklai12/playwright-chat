@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Playwright Chat Automation System - 用自然語言對話創建和執行瀏覽器自動化測試，零學習曲線，AI驅動，完全開源">
+    <meta name="keywords" content="Playwright, 自動化測試, AI, 聊天機器人, 瀏覽器自動化, 測試工程">
+    <meta name="author" content="Playwright Chat Automation Team">
+    <title>Playwright Chat Automation System - 用聊天開始你的自動化測試</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'dark-bg': '#0f172a',
+                        'dark-card': '#1e293b',
+                        'tech-blue': '#3b82f6',
+                        'tech-green': '#10b981'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', '-apple-system', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Custom animations and styles */
+        .gradient-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        
+        .tech-grid {
+            background-image: 
+                linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .accordion-content.active {
+            max-height: 500px;
+            transition: max-height 0.5s ease-in;
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-dark-bg text-gray-100 font-sans">
+    
+    <!-- Fixed Navigation -->
+    <nav class="fixed top-0 w-full bg-dark-bg/95 backdrop-blur-sm z-50 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="#" class="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+                    <i class="fas fa-robot text-tech-blue text-2xl"></i>
+                    <span class="text-xl font-bold">Playwright Chat</span>
+                </a>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#benefits" class="hover:text-tech-blue transition-colors">核心優勢</a>
+                    <a href="#showcase" class="hover:text-tech-blue transition-colors">實際案例</a>
+                    <a href="#features" class="hover:text-tech-blue transition-colors">功能特色</a>
+                    <a href="#faq" class="hover:text-tech-blue transition-colors">常見問題</a>
+                    <!-- <a href="https://github.com" target="_blank" rel="noopener noreferrer" 
+                       class="bg-tech-blue hover:bg-blue-600 px-4 py-2 rounded-lg transition-all hover:scale-105">
+                        <i class="fab fa-github mr-2"></i>GitHub
+                    </a> -->
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-gray-300 hover:text-white">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-dark-bg border-t border-gray-800">
+            <div class="px-4 py-2 space-y-2">
+                <a href="#benefits" class="block py-2 hover:text-tech-blue transition-colors">核心優勢</a>
+                <a href="#showcase" class="block py-2 hover:text-tech-blue transition-colors">實際案例</a>
+                <a href="#features" class="block py-2 hover:text-tech-blue transition-colors">功能特色</a>
+                <a href="#faq" class="block py-2 hover:text-tech-blue transition-colors">常見問題</a>
+                <!-- <a href="https://github.com" target="_blank" rel="noopener noreferrer" 
+                   class="block bg-tech-blue hover:bg-blue-600 px-4 py-2 rounded-lg text-center mt-2">
+                    <i class="fab fa-github mr-2"></i>GitHub
+                </a> -->
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center gradient-bg tech-grid overflow-hidden pt-16">
+        <div class="absolute inset-0 bg-gradient-to-br from-tech-blue/10 to-transparent"></div>
+        
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <!-- Main Content -->
+            <div class="slide-in">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                    告別複雜語法<br>
+                    <span class="text-tech-blue">用聊天開始你的自動化測試</span>
+                </h1>
+                
+                <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed">
+                    您只需描述想做什麼，AI 立即為您生成並執行專業的 Playwright 測試腳本。<br>
+                    <span class="text-tech-green font-semibold">3 分鐘從零到完成第一個測試，減少 90% 學習時間。</span>
+                </p>
+                
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                    <a href="#" id="cta-button-hero"
+                       class="bg-tech-blue hover:bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all hover:scale-105 shadow-lg hover:shadow-xl">
+                        <i class="fas fa-rocket mr-2"></i>立即免費開始
+                    </a>
+                    <a href="#showcase"
+                       class="border border-gray-500 hover:border-tech-blue hover:text-tech-blue px-6 py-4 rounded-lg text-lg font-semibold transition-all hover:scale-105">
+                        <i class="fas fa-play-circle mr-2"></i>查看實際案例
+                    </a>
+                </div>
+                
+                <!-- Trust Badges -->
+                <div class="flex flex-wrap justify-center gap-4 text-sm text-gray-400">
+                    <span class="bg-dark-card px-4 py-2 rounded-full">
+                        <i class="fas fa-check text-tech-green mr-2"></i>完全開源
+                    </span>
+                    <span class="bg-dark-card px-4 py-2 rounded-full">
+                        <i class="fas fa-check text-tech-green mr-2"></i>MIT 授權
+                    </span>
+                    <span class="bg-dark-card px-4 py-2 rounded-full">
+                        <i class="fas fa-check text-tech-green mr-2"></i>Docker 一鍵部署
+                    </span>
+                    <span class="bg-dark-card px-4 py-2 rounded-full">
+                        <i class="fas fa-check text-tech-green mr-2"></i>支援 Groq 免費 API
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Visual Element - Chat Interface Mock -->
+            <div class="mt-16 max-w-4xl mx-auto float-animation">
+                <div class="bg-dark-card rounded-2xl p-6 shadow-2xl border border-gray-700">
+                    <div class="flex items-center mb-4">
+                        <div class="flex space-x-2">
+                            <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                        </div>
+                        <span class="ml-4 text-gray-400 text-sm">Chat Automation Interface</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="bg-gray-800 rounded-lg p-3 max-w-[80%]">
+                            <p class="text-sm">請幫我測試登入功能...</p>
+                        </div>
+                        <div class="bg-tech-blue/20 rounded-lg p-3 max-w-[80%] ml-auto border border-tech-blue/30">
+                            <p class="text-sm">我已為您生成測試腳本並開始執行...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Core Benefits Section -->
+    <section id="benefits" class="py-20 bg-gradient-to-b from-dark-bg to-dark-card">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">為什麼選擇 Playwright Chat Automation？</h2>
+                <p class="text-xl text-gray-400">革命性的測試自動化體驗，讓每個人都能成為測試專家</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Card 1 - 極速上手 -->
+                <div class="bg-dark-bg rounded-2xl p-8 border border-gray-700 hover:border-tech-blue/50 transition-all hover:scale-105 hover:shadow-xl">
+                    <div class="text-5xl mb-4">💬</div>
+                    <h3 class="text-2xl font-bold mb-4 text-tech-blue">零學習曲線</h3>
+                    <p class="text-gray-300 mb-4 leading-relaxed">
+                        不用學 Playwright 語法，像聊天一樣就能完成專業測試。一般需要 2-3 週學習的 Playwright，現在只需 3 分鐘就能開始使用。
+                    </p>
+                    <div class="bg-gray-800 rounded-lg p-4 mt-6">
+                        <p class="text-sm text-gray-400 font-semibold mb-2">使用場景：</p>
+                        <p class="text-sm text-gray-300">
+                            當您的 PM 要求「測試登入功能」，只需輸入這句話，系統立即生成完整測試腳本並執行。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Card 2 - 即時可見 -->
+                <div class="bg-dark-bg rounded-2xl p-8 border border-gray-700 hover:border-tech-blue/50 transition-all hover:scale-105 hover:shadow-xl">
+                    <div class="text-5xl mb-4">📸</div>
+                    <h3 class="text-2xl font-bold mb-4 text-tech-green">完全掌控</h3>
+                    <p class="text-gray-300 mb-4 leading-relaxed">
+                        每個步驟都有截圖，測試過程一目了然。從需求分析、代碼生成到執行結果，全程不到 30 秒，您可以看見每一個動作。
+                    </p>
+                    <div class="bg-gray-800 rounded-lg p-4 mt-6">
+                        <p class="text-sm text-gray-400 font-semibold mb-2">使用場景：</p>
+                        <p class="text-sm text-gray-300">
+                            實時截圖讓您像看電影一樣追蹤測試進度，不再擔心「測試到底跑到哪了」。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Card 3 - 生產就緒 -->
+                <div class="bg-dark-bg rounded-2xl p-8 border border-gray-700 hover:border-tech-blue/50 transition-all hover:scale-105 hover:shadow-xl">
+                    <div class="text-5xl mb-4">🚀</div>
+                    <h3 class="text-2xl font-bold mb-4 text-purple-400">開箱即用</h3>
+                    <p class="text-gray-300 mb-4 leading-relaxed">
+                        一條指令完成部署，立即在生產環境使用。執行 docker-compose up 就能啟動包含前端、後端、瀏覽器服務的完整系統。
+                    </p>
+                    <div class="bg-gray-800 rounded-lg p-4 mt-6">
+                        <p class="text-sm text-gray-400 font-semibold mb-2">使用場景：</p>
+                        <p class="text-sm text-gray-300">
+                            新成員只需 5 分鐘就能在自己的電腦上運行整套系統，團隊協作零障礙。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Feature Showcase Section -->
+    <section id="showcase" class="py-20 bg-dark-bg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">三個步驟，完成專業自動化測試</h2>
+                <p class="text-xl text-gray-400">從想法到執行，前所未有的簡單流程</p>
+            </div>
+            
+            <!-- Timeline Steps -->
+            <div class="relative">
+                <!-- Timeline Line -->
+                <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-tech-blue via-tech-green to-purple-500"></div>
+                
+                <!-- Step 1 -->
+                <div class="relative mb-20">
+                    <div class="flex items-center justify-center">
+                        <div class="bg-dark-card rounded-2xl p-8 max-w-2xl border border-gray-700 hover:border-tech-blue/50 transition-all">
+                            <div class="absolute left-1/2 transform -translate-x-1/2 -top-4 bg-tech-blue text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl">
+                                1
+                            </div>
+                            <h3 class="text-2xl font-bold mb-4 text-tech-blue">說出您的需求</h3>
+                            <p class="text-gray-300 mb-6">就像跟同事說話一樣，不需要技術用語</p>
+                            
+                            <!-- Example Dialog -->
+                            <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                                <p class="text-sm text-gray-400 mb-2">範例對話：</p>
+                                <div class="bg-gray-800 rounded p-3 text-sm text-gray-300">
+                                    測試 https://the-internet.herokuapp.com/login 的登入功能：<br>
+                                    1. 打開登入頁面<br>
+                                    2. 輸入用戶名：tomsmith<br>
+                                    3. 輸入密碼：SuperSecretPassword!<br>
+                                    4. 截圖目前頁面<br>
+                                    5. 點擊登入按鈕<br>
+                                    6. 驗證是否看到成功訊息<br>
+                                    7. 截圖登入後的頁面<br>
+                                    8. 點擊登出<br>
+                                    9. 驗證返回登入頁面<br>
+                                    10. 截圖最終狀態
+                                </div>
+                            </div>
+                            
+                            <div class="bg-tech-blue/10 border border-tech-blue/30 rounded-lg p-3">
+                                <p class="text-sm text-tech-blue">
+                                    <i class="fas fa-lightbulb mr-2"></i>
+                                    您專注在「要測什麼」，AI 處理「怎麼測」
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="relative mb-20">
+                    <div class="flex items-center justify-center">
+                        <div class="bg-dark-card rounded-2xl p-8 max-w-2xl border border-gray-700 hover:border-tech-green/50 transition-all">
+                            <div class="absolute left-1/2 transform -translate-x-1/2 -top-4 bg-tech-green text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl">
+                                2
+                            </div>
+                            <h3 class="text-2xl font-bold mb-4 text-tech-green">10 秒生成專業代碼</h3>
+                            <p class="text-gray-300 mb-6">從需求分析到代碼生成，全程自動化且可視化</p>
+                            
+                            <!-- Code Preview -->
+                            <div class="bg-gray-900 rounded-lg p-4 mb-4 overflow-x-auto">
+                                <p class="text-sm text-gray-400 mb-2">生成的代碼預覽：</p>
+                                <pre class="text-sm text-gray-300"><code><span class="text-purple-400">import</span> { test, expect } <span class="text-purple-400">from</span> <span class="text-green-400">'@playwright/test'</span>;
+
+<span class="text-purple-400">test</span>(<span class="text-green-400">'登入功能測試'</span>, <span class="text-purple-400">async</span> ({ page }) => {
+  <span class="text-purple-400">await</span> page.<span class="text-blue-400">goto</span>(<span class="text-green-400">'https://example.com/login'</span>);
+  <span class="text-purple-400">await</span> page.<span class="text-blue-400">fill</span>(<span class="text-green-400">'#username'</span>, <span class="text-green-400">'testuser'</span>);
+  <span class="text-purple-400">await</span> page.<span class="text-blue-400">fill</span>(<span class="text-green-400">'#password'</span>, <span class="text-green-400">'password123'</span>);
+  <span class="text-purple-400">await</span> page.<span class="text-blue-400">click</span>(<span class="text-green-400">'#login-btn'</span>);
+  <span class="text-purple-400">await</span> expect(page.<span class="text-blue-400">locator</span>(<span class="text-green-400">'.welcome'</span>)).<span class="text-blue-400">toBeVisible</span>();
+  <span class="text-purple-400">await</span> page.<span class="text-blue-400">screenshot</span>({ path: <span class="text-green-400">'login-success.png'</span> });
+});</code></pre>
+                            </div>
+                            
+                            <div class="bg-tech-green/10 border border-tech-green/30 rounded-lg p-3">
+                                <p class="text-sm text-tech-green">
+                                    <i class="fas fa-check-circle mr-2"></i>
+                                    生成的代碼符合業界最佳實踐，您可以直接複製使用
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="relative">
+                    <div class="flex items-center justify-center">
+                        <div class="bg-dark-card rounded-2xl p-8 max-w-2xl border border-gray-700 hover:border-purple-500/50 transition-all">
+                            <div class="absolute left-1/2 transform -translate-x-1/2 -top-4 bg-purple-500 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl">
+                                3
+                            </div>
+                            <h3 class="text-2xl font-bold mb-4 text-purple-400">看著測試自動完成</h3>
+                            <p class="text-gray-300 mb-6">不只是執行，還能看到每個步驟的截圖證明</p>
+                            
+                            <!-- Screenshot Carousel -->
+                            <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                                <p class="text-sm text-gray-400 mb-4">測試執行截圖：</p>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="bg-gray-800 rounded p-2">
+                                        <img src="screenshots/step1_open_page.png" 
+                                             alt="Step 1 - 打開登入頁面" class="w-full rounded">
+                                        <p class="text-xs text-gray-400 mt-2 text-center">打開登入頁面</p>
+                                    </div>
+                                    <div class="bg-gray-800 rounded p-2">
+                                        <img src="screenshots/step2_input_credentials.png" 
+                                             alt="Step 2 - 輸入憑證" class="w-full rounded">
+                                        <p class="text-xs text-gray-400 mt-2 text-center">輸入憑證</p>
+                                    </div>
+                                    <div class="bg-gray-800 rounded p-2">
+                                        <img src="screenshots/step3_click_login.png" 
+                                             alt="Step 3 - 登入成功" class="w-full rounded">
+                                        <p class="text-xs text-gray-400 mt-2 text-center">登入成功</p>
+                                    </div>
+                                    <div class="bg-gray-800 rounded p-2">
+                                        <img src="screenshots/step4_success.png" 
+                                             alt="返回登入頁面" class="w-full rounded">
+                                        <p class="text-xs text-gray-400 mt-2 text-center">返回登入頁面</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-purple-500/10 border border-purple-500/30 rounded-lg p-3">
+                                <p class="text-sm text-purple-400">
+                                    <i class="fas fa-bolt mr-2"></i>
+                                    遇到問題立即發現，不用等測試結束才知道哪裡錯了
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Social Proof Section -->
+    <section id="features" class="py-20 bg-gradient-to-b from-dark-bg to-dark-card">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">開發者們都在用它提升效率</h2>
+                <p class="text-xl text-gray-400">真實的數據，真實的改變</p>
+            </div>
+            
+            <!-- Statistics -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
+                <div class="text-center">
+                    <div class="text-5xl font-bold text-tech-blue mb-2">90%</div>
+                    <p class="text-gray-400">學習時間節省</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl font-bold text-tech-green mb-2">5x</div>
+                    <p class="text-gray-400">開發效率提升</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl font-bold text-purple-400 mb-2">100%</div>
+                    <p class="text-gray-400">免費開源</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl font-bold text-yellow-400 mb-2">3</div>
+                    <p class="text-gray-400">支援主流 AI 模型</p>
+                </div>
+            </div>
+            
+            <!-- Technical Features Grid -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-dark-bg rounded-xl p-6 border border-gray-700 hover:border-tech-blue/50 transition-all">
+                    <div class="flex items-center mb-3">
+                        <span class="text-2xl mr-3">🤖</span>
+                        <h4 class="text-lg font-semibold">AI 驅動</h4>
+                    </div>
+                    <p class="text-gray-400 text-sm">支援 Groq 的 openai/gpt-oss-120b、OpenAI GPT-4、Anthropic Claude</p>
+                </div>
+                
+                <div class="bg-dark-bg rounded-xl p-6 border border-gray-700 hover:border-tech-blue/50 transition-all">
+                    <div class="flex items-center mb-3">
+                        <span class="text-2xl mr-3">💬</span>
+                        <h4 class="text-lg font-semibold">聊天介面</h4>
+                    </div>
+                    <p class="text-gray-400 text-sm">直觀的自然語言交互，零技術門檻</p>
+                </div>
+                
+                <div class="bg-dark-bg rounded-xl p-6 border border-gray-700 hover:border-tech-blue/50 transition-all">
+                    <div class="flex items-center mb-3">
+                        <span class="text-2xl mr-3">⚡</span>
+                        <h4 class="text-lg font-semibold">即時執行</h4>
+                    </div>
+                    <p class="text-gray-400 text-sm">實時 WebSocket 通訊，秒級響應</p>
+                </div>
+                
+                <div class="bg-dark-bg rounded-xl p-6 border border-gray-700 hover:border-tech-blue/50 transition-all">
+                    <div class="flex items-center mb-3">
+                        <span class="text-2xl mr-3">🐳</span>
+                        <h4 class="text-lg font-semibold">容器化</h4>
+                    </div>
+                    <p class="text-gray-400 text-sm">Docker 一鍵部署，跨平台支援</p>
+                </div>
+                
+                <div class="bg-dark-bg rounded-xl p-6 border border-gray-700 hover:border-tech-blue/50 transition-all">
+                    <div class="flex items-center mb-3">
+                        <span class="text-2xl mr-3">📱</span>
+                        <h4 class="text-lg font-semibold">現代化 UI</h4>
+                    </div>
+                    <p class="text-gray-400 text-sm">Next.js 15 + ShadCN UI，優雅的使用體驗</p>
+                </div>
+                
+                <div class="bg-dark-bg rounded-xl p-6 border border-gray-700 hover:border-tech-blue/50 transition-all">
+                    <div class="flex items-center mb-3">
+                        <span class="text-2xl mr-3">🔧</span>
+                        <h4 class="text-lg font-semibold">生產就緒</h4>
+                    </div>
+                    <p class="text-gray-400 text-sm">完整的企業級功能，可擴展架構</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Call to Action Section -->
+    <section class="py-20 bg-gradient-to-r from-tech-blue to-tech-green">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 text-white">
+                準備好讓 AI 為您處理瀏覽器自動化了嗎？
+            </h2>
+            <p class="text-xl mb-8 text-white/90">
+                完全免費開源 | MIT 授權 | 5 分鐘完成安裝 | 支援 Groq 免費 API
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+                <a href="#" id="cta-button-bottom"
+                   class="bg-white text-tech-blue px-8 py-4 rounded-lg text-lg font-bold transition-all hover:scale-105 hover:shadow-2xl">
+                    <i class="fas fa-rocket mr-2"></i>立即免費開始使用
+                </a>
+                <a href="https://www.notion.so/2ac93462fd5380d4bd3ae86dcf17d85f?source=copy_link" target="_blank" rel="noopener noreferrer"
+                   class="border-2 border-white text-white px-6 py-4 rounded-lg text-lg font-semibold transition-all hover:bg-white hover:text-tech-blue">
+                    <i class="fas fa-book mr-2"></i>查看完整範例
+                </a>
+            </div>
+            
+            <div class="flex flex-wrap justify-center gap-4 text-white/80 text-sm">
+                <span><i class="fas fa-check-circle mr-2"></i>不需要信用卡</span>
+                <span><i class="fas fa-check-circle mr-2"></i>不需要註冊帳號</span>
+                <span><i class="fas fa-check-circle mr-2"></i>完整文件和範例</span>
+                <span><i class="fas fa-check-circle mr-2"></i>GitHub 社群支援</span>
+            </div>
+        </div>
+    </section>
+    
+    <!-- FAQ Section -->
+    <section id="faq" class="py-20 bg-dark-bg">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">您可能想知道的問題</h2>
+                <p class="text-xl text-gray-400">常見問題解答，讓您更了解我們的產品</p>
+            </div>
+            
+            <div class="space-y-4">
+                <!-- FAQ Item 1 -->
+                <div class="bg-dark-card rounded-xl border border-gray-700 overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-800/50 transition-colors">
+                        <span class="text-lg font-semibold">我完全不懂程式，也能使用嗎？</span>
+                        <i class="fas fa-chevron-down transition-transform"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="px-6 pb-4 text-gray-300">
+                            可以。您只需要用自然語言描述想測試什麼，就像跟同事對話一樣。系統會自動理解您的需求，生成專業的測試代碼並執行。不需要任何程式設計基礎，也不需要了解 Playwright 的語法。
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 2 -->
+                <div class="bg-dark-card rounded-xl border border-gray-700 overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-800/50 transition-colors">
+                        <span class="text-lg font-semibold">需要付費嗎？有什麼使用限制？</span>
+                        <i class="fas fa-chevron-down transition-transform"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="px-6 pb-4 text-gray-300">
+                            完全免費。本專案採用 MIT 開源授權，您可以自由使用、修改和分發。沒有任何使用限制，沒有隱藏費用。您只需要支付可能產生的 AI API 費用（如果使用付費 API），但我們也支援 Groq 等免費的 AI 服務。
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 3 -->
+                <div class="bg-dark-card rounded-xl border border-gray-700 overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-800/50 transition-colors">
+                        <span class="text-lg font-semibold">安裝部署會很複雜嗎？</span>
+                        <i class="fas fa-chevron-down transition-transform"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="px-6 pb-4 text-gray-300">
+                            非常簡單。只需要安裝 Docker，然後執行一條指令：docker-compose up。系統會自動下載並啟動所有必要的服務，包括前端介面、後端 API、瀏覽器引擎等。整個過程通常在 5 分鐘內完成。
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 4 -->
+                <div class="bg-dark-card rounded-xl border border-gray-700 overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-800/50 transition-colors">
+                        <span class="text-lg font-semibold">生成的測試代碼品質如何？</span>
+                        <i class="fas fa-chevron-down transition-transform"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="px-6 pb-4 text-gray-300">
+                            生成的代碼符合 Playwright 最佳實踐，包含適當的等待策略、錯誤處理和斷言。我們的 AI 模型經過大量優質測試代碼訓練，能夠生成可讀性高、可維護性強的代碼。您也可以隨時手動調整生成的代碼。
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 5 -->
+                <div class="bg-dark-card rounded-xl border border-gray-700 overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-800/50 transition-colors">
+                        <span class="text-lg font-semibold">支援哪些瀏覽器和測試場景？</span>
+                        <i class="fas fa-chevron-down transition-transform"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="px-6 pb-4 text-gray-300">
+                            支援 Chrome、Firefox、Safari、Edge 等所有主流瀏覽器。可以測試各種網頁應用場景，包括表單提交、用戶認證、電商購物流程、數據驗證等。無論是簡單的點擊測試還是複雜的多步驟流程，都能輕鬆應對。
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 6 -->
+                <div class="bg-dark-card rounded-xl border border-gray-700 overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-800/50 transition-colors">
+                        <span class="text-lg font-semibold">如果遇到問題該怎麼辦？</span>
+                        <i class="fas fa-chevron-down transition-transform"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="px-6 pb-4 text-gray-300">
+                            我們提供完整的文件和範例，幫助您快速上手。您可以在 GitHub 上提交 Issue，我們會盡快回應。同時，我們也有 Discord 社群，可以與其他使用者交流經驗。對於企業用戶，我們也提供付費的技術支援服務。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-dark-card border-t border-gray-800 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Left Column -->
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-robot text-tech-blue text-2xl"></i>
+                        <span class="text-xl font-bold">Playwright Chat</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-4">
+                        讓 AI 為您處理瀏覽器自動化測試，零學習曲線，即時可見結果。
+                    </p>
+                    <p class="text-gray-500 text-xs">
+                        © 2025 Playwright Chat Automation Team
+                    </p>
+                </div>
+                
+                <!-- Middle Column -->
+                <div>
+                    <h4 class="font-semibold mb-4">快速連結</h4>
+                    <div class="space-y-2">
+                        <!-- <a href="https://github.com" target="_blank" rel="noopener noreferrer" 
+                           class="block text-gray-400 hover:text-tech-blue transition-colors text-sm">
+                            <i class="fab fa-github mr-2"></i>GitHub 專案
+                        </a>
+                        <a href="https://docs.example.com" target="_blank" rel="noopener noreferrer" 
+                           class="block text-gray-400 hover:text-tech-blue transition-colors text-sm">
+                            <i class="fas fa-book mr-2"></i>完整文件
+                        </a> -->
+                        <a href="https://www.notion.so/2ac93462fd5380d4bd3ae86dcf17d85f?source=copy_link" target="_blank" rel="noopener noreferrer" 
+                           class="block text-gray-400 hover:text-tech-blue transition-colors text-sm">
+                            <i class="fas fa-code mr-2"></i>使用範例
+                        </a>
+                        <!-- <a href="https://changelog.example.com" target="_blank" rel="noopener noreferrer" 
+                           class="block text-gray-400 hover:text-tech-blue transition-colors text-sm">
+                            <i class="fas fa-history mr-2"></i>變更記錄
+                        </a> -->
+                    </div>
+                </div>
+                
+                <!-- Right Column -->
+                <div>
+                    <h4 class="font-semibold mb-4">聯繫我們</h4>
+                    <div class="space-y-2">
+                        <!-- <a href="https://github.com/issues" target="_blank" rel="noopener noreferrer" 
+                           class="block text-gray-400 hover:text-tech-blue transition-colors text-sm">
+                            <i class="fas fa-bug mr-2"></i>回報問題
+                        </a>
+                        <a href="https://discord.gg/example" target="_blank" rel="noopener noreferrer" 
+                           class="block text-gray-400 hover:text-tech-blue transition-colors text-sm">
+                            <i class="fab fa-discord mr-2"></i>Discord 社群
+                        </a> -->
+                        <a href="mailto:nicklai12@gmail.com" 
+                           class="block text-gray-400 hover:text-tech-blue transition-colors text-sm">
+                            <i class="fas fa-envelope mr-2"></i>nicklai12@gmail.com
+                        </a>
+                    </div>
+                    
+                    <!-- Social Media Icons -->
+                    <div class="flex space-x-4 mt-6">
+                        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" 
+                           class="text-gray-400 hover:text-tech-blue transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" 
+                           class="text-gray-400 hover:text-tech-blue transition-colors">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </a>
+                        <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" 
+                           class="text-gray-400 hover:text-tech-blue transition-colors">
+                            <i class="fab fa-youtube text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Back to Top Button -->
+    <button id="back-to-top" 
+            class="fixed bottom-8 right-8 bg-tech-blue hover:bg-blue-600 text-white p-4 rounded-full shadow-lg transition-all hover:scale-110 opacity-0 invisible">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <!-- JavaScript -->
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Close mobile menu when clicking on a link
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+        
+        // FAQ Accordion
+        const faqToggles = document.querySelectorAll('.faq-toggle');
+        
+        faqToggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const content = toggle.nextElementSibling;
+                const icon = toggle.querySelector('i');
+                
+                // Close all other accordions
+                faqToggles.forEach(otherToggle => {
+                    if (otherToggle !== toggle) {
+                        otherToggle.nextElementSibling.classList.remove('active');
+                        otherToggle.querySelector('i').style.transform = 'rotate(0deg)';
+                    }
+                });
+                
+                // Toggle current accordion
+                content.classList.toggle('active');
+                if (content.classList.contains('active')) {
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            });
+        });
+        
+        // Back to Top Button
+        const backToTopBtn = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopBtn.classList.remove('opacity-0', 'invisible');
+                backToTopBtn.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopBtn.classList.add('opacity-0', 'invisible');
+                backToTopBtn.classList.remove('opacity-100', 'visible');
+            }
+        });
+        
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // CTA Button Click Tracking
+        document.querySelectorAll('a[href*="github.com"], a[href*="docs"]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const linkText = e.currentTarget.textContent.trim();
+                console.log(`CTA Clicked: ${linkText}`);
+                // In production, you would send this to analytics
+            });
+        });
+        
+        // Add scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('slide-in');
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all sections
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                
+                // 如果是 # 就滾動到頂部
+                if (href === '#') {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                    return;
+                }
+                
+                // 其他錨點正常處理
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // CTA Button Handler - Wake up services before opening frontend
+        async function handleCTAClick(e) {
+            e.preventDefault();
+            
+            const button = e.currentTarget;
+            const icon = button.querySelector('i');
+            const originalIconClass = icon.className;
+            const originalText = button.childNodes[1].textContent;
+            
+            // Cute loading messages
+            const loadingMessages = [
+                '🚀 啟動服務中...',
+                '⏰ 喚醒伺服器中...',
+                '💫 準備就緒中...',
+                '✨ 即將完成...'
+            ];
+            let messageIndex = 0;
+            
+            // Show loading state
+            icon.className = 'fas fa-spinner fa-spin mr-2';
+            button.childNodes[1].textContent = loadingMessages[0];
+            button.classList.add('opacity-75', 'cursor-wait');
+            button.style.pointerEvents = 'none';
+            
+            // Change message every 1.2 seconds
+            const messageInterval = setInterval(() => {
+                messageIndex = (messageIndex + 1) % loadingMessages.length;
+                button.childNodes[1].textContent = loadingMessages[messageIndex];
+            }, 1200);
+            
+            try {
+                // Wake up all services in parallel (including frontend)
+                const wakeUpPromises = [
+                    fetch('https://playwright-mcp-gmia.onrender.com/', { mode: 'no-cors' }),
+                    fetch('https://playwright-chat-backend.onrender.com/', { mode: 'no-cors' }),
+                    fetch('https://playwright-chat-frontend.onrender.com/', { mode: 'no-cors' })
+                ];
+                
+                // Wait for services to wake up (max 5 seconds)
+                await Promise.race([
+                    Promise.all(wakeUpPromises),
+                    new Promise(resolve => setTimeout(resolve, 5000))
+                ]);
+                
+                // Open frontend in new window
+                window.open('https://playwright-chat-frontend.onrender.com/', '_blank');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                window.open('https://playwright-chat-frontend.onrender.com/', '_blank');
+            } finally {
+                // Clear message interval
+                clearInterval(messageInterval);
+                
+                // Restore button state after a short delay
+                setTimeout(() => {
+                    icon.className = originalIconClass;
+                    button.childNodes[1].textContent = originalText;
+                    button.classList.remove('opacity-75', 'cursor-wait');
+                    button.style.pointerEvents = '';
+                }, 500);
+            }
+        }
+        
+        // Attach handlers to CTA buttons
+        document.getElementById('cta-button-hero')?.addEventListener('click', handleCTAClick);
+        document.getElementById('cta-button-bottom')?.addEventListener('click', handleCTAClick);
+    </script>
+</body>
+</html>

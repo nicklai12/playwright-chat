@@ -81,6 +81,26 @@
             transition: max-height 0.5s ease-in;
         }
         
+        /* Rocket Launch Animation */
+        @keyframes rocketLaunch {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-10px) rotate(-5deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+        }
+        
+        .rocket-launching {
+            animation: rocketLaunch 0.6s ease-in-out infinite;
+        }
+        
         /* Scrollbar styling */
         ::-webkit-scrollbar {
             width: 8px;
@@ -834,16 +854,17 @@
             ];
             let messageIndex = 0;
             
-            // Show loading state
-            icon.className = 'fas fa-spinner fa-spin mr-2';
-            button.childNodes[1].textContent = loadingMessages[0];
+            // Show loading state - only show rocket icon
+            const textNode = button.childNodes[1];
+            textNode.textContent = '';
+            icon.className = 'fas fa-rocket rocket-launching';
             button.classList.add('opacity-75', 'cursor-wait');
             button.style.pointerEvents = 'none';
             
-            // Change message every 1.2 seconds
+            // Change message every 1.2 seconds (no longer needed, but keep interval logic for timing)
             const messageInterval = setInterval(() => {
                 messageIndex = (messageIndex + 1) % loadingMessages.length;
-                button.childNodes[1].textContent = loadingMessages[messageIndex];
+                // Don't update text, just for timing purposes
             }, 1200);
             
             try {

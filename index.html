@@ -854,10 +854,10 @@
                     fetch('https://playwright-chat-frontend.onrender.com/', { mode: 'no-cors' })
                 ];
                 
-                // Wait for services to wake up (max 5 seconds)
+                // Wait for services to wake up (max 3 seconds)
                 await Promise.race([
                     Promise.all(wakeUpPromises),
-                    new Promise(resolve => setTimeout(resolve, 5000))
+                    new Promise(resolve => setTimeout(resolve, 3000))
                 ]);
                 
                 // Open frontend in new window
@@ -883,6 +883,14 @@
         // Attach handlers to CTA buttons
         document.getElementById('cta-button-hero')?.addEventListener('click', handleCTAClick);
         document.getElementById('cta-button-bottom')?.addEventListener('click', handleCTAClick);
+        
+        // Wake up services on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Silently wake up all services in the background
+            fetch('https://playwright-mcp-gmia.onrender.com/', { mode: 'no-cors' }).catch(() => {});
+            fetch('https://playwright-chat-backend.onrender.com/', { mode: 'no-cors' }).catch(() => {});
+            fetch('https://playwright-chat-frontend.onrender.com/', { mode: 'no-cors' }).catch(() => {});
+        });
     </script>
 </body>
 </html>
